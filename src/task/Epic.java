@@ -1,12 +1,15 @@
+package task;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private final List<Integer> subtaskId = new ArrayList<>();
 
+    //исправил исходя из добавления второго конструктора в классе Task
     public Epic(String name, String description) {
-        super(name, description);
-        this.status = Status.NEW;
+        super(name, description, Status.NEW);
+
     }
 
     public List<Integer> getSubtaskId() {
@@ -28,10 +31,10 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "Epic{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
                 ", subtasks=" + subtaskId +
                 '}';
     }

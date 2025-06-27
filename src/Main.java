@@ -1,3 +1,6 @@
+import manager.TaskManager;
+import task.*; // изменил структуру пакетов
+
 public class Main {
         public static void main(String[] args) {
             TaskManager manager = new TaskManager();

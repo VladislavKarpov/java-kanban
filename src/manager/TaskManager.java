@@ -1,3 +1,5 @@
+package manager;
+import task.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,10 +78,9 @@ public class TaskManager {
         }
     }
 
+    //исправил по ТЗ
     public void updateEpic(Epic epic) {
         if (epics.containsKey(epic.getId())) {
-            Epic existingEpic = epics.get(epic.getId());
-            epic.getSubtaskId().addAll(existingEpic.getSubtaskId());
             epics.put(epic.getId(), epic);
             updateEpicStatus(epic);
         }

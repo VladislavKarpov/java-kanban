@@ -8,24 +8,19 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    //добавил еще один конструктор с возможностью установки статуса исходя из рекомендаций
     public Subtask(String name, String description, int epicId, Status status) {
         super(name, description, status);
         this.epicId = epicId;
     }
 
-
-
     public int getEpicId() {
         return epicId;
     }
 
-    //добавил и сеттер, но изменил поле epicId на private(убрав final)
     public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
 
-    //добавил обращение через super
     @Override
     public String toString() {
         return "Subtask{" +

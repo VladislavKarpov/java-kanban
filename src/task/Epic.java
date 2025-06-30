@@ -6,10 +6,8 @@ import java.util.List;
 public class Epic extends Task {
     private final List<Integer> subtaskId = new ArrayList<>();
 
-    //исправил исходя из добавления второго конструктора в классе Task
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
-
     }
 
     public List<Integer> getSubtaskId() {

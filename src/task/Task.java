@@ -6,7 +6,7 @@ public class Task {
     private int id;
     private Status status;
 
-    //добавил еще один конструктор
+
     public Task(String name, String description) {
         this(name, description, Status.NEW);
     }

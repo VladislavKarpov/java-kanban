@@ -16,7 +16,7 @@ public class EpicTest {
 
         epic.addSubtaskId(10); // напрямую
 
-        assertTrue(epic.getSubtaskId().contains(10), "Логика приложения должна запрещать это");
+        assertTrue(epic.getSubtaskIds().contains(10), "Логика приложения должна запрещать это");
 
     }
 }

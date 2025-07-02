@@ -8,7 +8,6 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    //private final LinkedList<Task> history = new LinkedList<>(); //история просмотров
     private final HistoryManager historyManager = Managers.getDefaultHistory(); //менеджер истории
 
     @Override
@@ -131,7 +130,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpic(int id) {
         Epic epic = epics.remove(id);
         if (epic != null) {
-            for (int subId : epic.getSubtaskId()) {
+            for (int subId : epic.getSubtaskIds()) {
                 subtasks.remove(subId);
             }
         }
@@ -154,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         List<Subtask> result = new ArrayList<>();
         if (epic != null) {
-            for (int subId : epic.getSubtaskId()) {
+            for (int subId : epic.getSubtaskIds()) {
                 result.add(subtasks.get(subId));
             }
         }
@@ -194,11 +193,4 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory(); //возвращаем копию, чтобы нельзя было изменять напрямую
     }
 
-//    private void addToHistory(Task task) {
-//        history.add(task);
-//        if (history.size() > 10) {
-//            history.removeFirst(); // удаляем самый старый просмотр
-    //реализовывал с LinkedList
-//        }
-//    }
 }

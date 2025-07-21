@@ -45,7 +45,7 @@ public class Main {
             manager.deleteTask(task1.getId());
             printHistory(manager);
 
-            
+
             System.out.println("\nУдаляем эпик с тремя подзадачами (Epic With Subtasks)");
             manager.deleteEpic(epicId);
             printHistory(manager);

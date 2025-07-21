@@ -80,16 +80,6 @@ public class InMemoryTaskManagerTest {
         assertEquals(3, manager.getHistory().size());
     }
 
-//    @Test
-//    void testHistorySizeLimit() {
-//        for (int i = 0; i < 15; i++) {
-//            Task task = new Task("Task " + i, "Description");
-//            manager.addTask(task);
-//            manager.getTask(task.getId());
-//        }
-//        assertTrue(manager.getHistory().size() <= 10);
-//    }
-
     @Test
     void testHistorySizeLimit() {
         for (int i = 0; i < 15; i++) {

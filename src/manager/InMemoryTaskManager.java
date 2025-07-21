@@ -1,4 +1,5 @@
 package manager;
+
 import task.*;
 
 import java.util.*;
@@ -35,6 +36,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.clear();
         subtasks.clear();
     }
+
 
     @Override
     public void deleteAllSubtasks() {

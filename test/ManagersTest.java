@@ -1,5 +1,3 @@
-package test;
-
 import manager.*;
 import org.junit.jupiter.api.Test;
 

@@ -4,9 +4,10 @@ import task.Task;
 
 import java.util.*;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
 
     private static final int MAX_HISTORY_SIZE = 10;
+
     private static class Node {
         public Task task;
         public Node prev;
@@ -52,7 +53,8 @@ public class InMemoryHistoryManager implements HistoryManager{
 
         Node prev = node.prev;
         Node next = node.next;
-        if(prev != null) {
+
+        if (prev != null) {
             prev.next = next;
         } else {
             head = next; //удаление первого элемента

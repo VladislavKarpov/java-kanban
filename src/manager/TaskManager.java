@@ -32,7 +32,7 @@ public interface TaskManager {
     void addSubtask(Subtask subtask);
 
     void updateTask(Task task);
-    
+
     void updateEpic(Epic epic);
 
     void updateSubtask(Subtask subtask);

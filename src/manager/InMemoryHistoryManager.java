@@ -6,8 +6,6 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private static final int MAX_HISTORY_SIZE = 10;
-
     private static class Node {
         public Task task;
         public Node prev;
@@ -31,10 +29,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         //удаление просмотренной задачи (перемещение в конец списка)
         remove(task.getId());
         linkLast(task);
-        if (nodeMap.size() > MAX_HISTORY_SIZE) {
-            // Удаляем первый (самый старый)
-            remove(head.task.getId());
-        }
     }
 
     private void linkLast(Task task) {
@@ -72,19 +66,22 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        List<Task> result = new ArrayList<>();
+        return getTasks();
+    }
+
+    private List<Task> getTasks() {
+        List<Task> tasks = new ArrayList<>();
         Node current = head;
         while (current != null) {
-            result.add(current.task);
+            tasks.add(current.task);
             current = current.next;
         }
-        return result;
+        return tasks;
     }
 
     @Override
     public void remove(int id) {
         Node node = nodeMap.remove(id);
         removeNode(node);
-
     }
 }

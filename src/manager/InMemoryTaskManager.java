@@ -74,22 +74,24 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
+    public Task addTask(Task task) {
         task.setId(nextId++);
         tasks.put(task.getId(), task);
+        return task;
     }
 
     @Override
-    public void addEpic(Epic epic) {
+    public Epic addEpic(Epic epic) {
         epic.setId(nextId++);
         epics.put(epic.getId(), epic);
+        return epic;
     }
 
     @Override
-    public void addSubtask(Subtask subtask) {
+    public Subtask addSubtask(Subtask subtask) {
         if (subtask.getId() == subtask.getEpicId()) {
             throw new IllegalArgumentException("Subtask не может быть своим эпиком");
-        } //добавил после тестирования
+        }
         subtask.setId(nextId++);
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
@@ -97,30 +99,37 @@ public class InMemoryTaskManager implements TaskManager {
             epic.addSubtaskId(subtask.getId());
             updateEpicStatus(epic);
         }
+        return subtask;
     }
 
     @Override
-    public void updateTask(Task task) {
+    public Task updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
+            return task;
         }
+        return null;
     }
 
     //исправил по ТЗ
     @Override
-    public void updateEpic(Epic epic) {
+    public Epic updateEpic(Epic epic) {
         if (epics.containsKey(epic.getId())) {
             epics.put(epic.getId(), epic);
             updateEpicStatus(epic);
+            return epic;
         }
+        return null;
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public Subtask updateSubtask(Subtask subtask) {
         if (subtasks.containsKey(subtask.getId())) {
             subtasks.put(subtask.getId(), subtask);
             updateEpicStatus(epics.get(subtask.getEpicId()));
+            return subtask;
         }
+        return null;
     }
 
     @Override

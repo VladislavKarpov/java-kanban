@@ -78,26 +78,6 @@ public class InMemoryTaskManagerTest {
         assertEquals(3, manager.getHistory().size());
     }
 
-    @Test
-    void testHistorySizeLimit() {
-        for (int i = 0; i < 15; i++) {
-            Task task = new Task("Task " + i, "Description");
-            manager.addTask(task);
-            manager.getTask(task.getId());
-        }
-
-        List<Task> history = manager.getHistory();
-
-        assertEquals(10, history.size(), "История должна содержать не более 10 задач");
-
-        // Проверим, что это последние 10 задач
-        for (int i = 5; i < 15; i++) {
-            assertEquals("Task " + i, history.get(i - 5).getName());
-        }
-    }
-
-    //если идти по "списку нюансов" из ТЗ:
-
     //InMemoryTaskManager добавляет и находит задачи по id
     @Test
     void managerShouldStoreAndRetrieveTasksById() {

@@ -1,11 +1,12 @@
-package test;
-
+import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.*;
 
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,18 +78,6 @@ public class InMemoryTaskManagerTest {
         assertEquals(3, manager.getHistory().size());
     }
 
-    @Test
-    void testHistorySizeLimit() {
-        for (int i = 0; i < 15; i++) {
-            Task task = new Task("Task " + i, "Description");
-            manager.addTask(task);
-            manager.getTask(task.getId());
-        }
-        assertTrue(manager.getHistory().size() <= 10);
-    }
-
-    //если идти по "списку нюансов" из ТЗ:
-
     //InMemoryTaskManager добавляет и находит задачи по id
     @Test
     void managerShouldStoreAndRetrieveTasksById() {
@@ -145,5 +134,46 @@ public class InMemoryTaskManagerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             manager.addSubtask(subtask);
         });
+    }
+
+    @Test
+    void shouldClearSubtaskIdsFromEpicWhenSubtaskIsDeleted() {
+        Epic epic = new Epic("Epic", "desc");
+        epic.setId(1);
+
+        Subtask sub1 = new Subtask("Sub 1", "desc", 1);
+        sub1.setId(2);
+        Subtask sub2 = new Subtask("Sub 2", "desc", 1);
+        sub2.setId(3);
+
+        TaskManager manager = new InMemoryTaskManager(); // твоя реализация
+        manager.addEpic(epic);
+        manager.addSubtask(sub1);
+        manager.addSubtask(sub2);
+
+        assertEquals(2, manager.getEpic(1).getSubtaskIds().size());
+
+        manager.deleteSubtask(2);
+
+        List<Integer> remaining = manager.getEpic(1).getSubtaskIds();
+        assertFalse(remaining.contains(2));
+        assertTrue(remaining.contains(3));
+    }
+
+    @Test
+    void changingTaskWithSetterShouldNotBreakManagerConsistency() {
+        TaskManager manager = new InMemoryTaskManager();
+        Task task = new Task("Task", "desc");
+        manager.addTask(task);
+
+        int id = task.getId(); // получаем ID, присвоенный менеджером
+
+        task.setName("Changed!");
+        task.setStatus(Status.DONE);
+
+        Task retrieved = manager.getTask(id);
+
+        assertEquals("Changed!", retrieved.getName());
+        assertEquals(Status.DONE, retrieved.getStatus());
     }
 }

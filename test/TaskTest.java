@@ -1,5 +1,5 @@
-package test;
-
+import manager.InMemoryTaskManager;
+import manager.TaskManager;
 import org.junit.jupiter.api.Test;
 import task.*;
 
@@ -46,4 +46,26 @@ public class TaskTest {
 
         assertEquals(sub1, sub2);
     }
+
+    @Test
+    void changingTaskWithSetterShouldNotBreakManagerConsistency() {
+        Task task = new Task("Task", "desc");
+
+        TaskManager manager = new InMemoryTaskManager();
+        manager.addTask(task);
+
+        int id = task.getId(); // ID, назначенный менеджером
+
+        // Изменим свойства
+        task.setName("Changed!");
+        task.setStatus(Status.DONE);
+
+        Task retrieved = manager.getTask(id);
+
+        assertNotNull(retrieved, "Задача должна быть найдена по ID");
+        assertEquals("Changed!", retrieved.getName());
+        assertEquals(Status.DONE, retrieved.getStatus());
+    }
+
+
 }

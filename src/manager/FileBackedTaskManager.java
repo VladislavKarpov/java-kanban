@@ -105,7 +105,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             String[] parts = content.split("\n\n");
             String[] taskLines = parts[0].split("\n");
 
-            for(int i = 1; i < taskLines.length; i++) {
+            for (int i = 1; i < taskLines.length; i++) {
                 Task task = TaskConverter.fromString(taskLines[i]);
                 int id = task.getId();
                 if (task instanceof Epic) {

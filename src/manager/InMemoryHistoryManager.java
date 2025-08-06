@@ -38,6 +38,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             head = newNode; //первый элемент
         }
+
         tail = newNode;
         nodeMap.put(task.getId(), newNode);
     }
@@ -50,14 +51,18 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         if (prev != null) {
             prev.next = next;
+
         } else {
             head = next; //удаление первого элемента
+
         }
 
         if (next != null) {
             next.prev = prev;
+
         } else {
             tail = prev; //удаление последнего элемента
+
         }
 
         node.prev = null;
@@ -75,6 +80,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         while (current != null) {
             tasks.add(current.task);
             current = current.next;
+
         }
         return tasks;
     }

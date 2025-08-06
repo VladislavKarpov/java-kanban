@@ -56,10 +56,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (int i = 1; i < taskLines.length; i++) {
                 Task task = TaskConverter.fromString(taskLines[i]);
                 manager.setIdIToTask(task.getId());
-               switch (task.getType()) {
-                   case TASK -> manager.addTask(task);
-                   case EPIC -> manager.addEpic((Epic) task);
-                   case SUBTASK -> manager.addSubtask((Subtask) task);               }
+                switch (task.getType()) {
+                    case TASK -> manager.addTask(task);
+                    case EPIC -> manager.addEpic((Epic) task);
+                    case SUBTASK -> manager.addSubtask((Subtask) task);
+                }
 
             }
 
@@ -67,9 +68,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 List<Integer> history = HistoryConverter.fromString(parts[1]);
                 for (Integer taskId : history) {
                     manager.getTaskById(taskId);
-
                 }
-
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка загрузки данных из файла", e);

@@ -42,7 +42,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         for (Epic epic : epics.values()) {
             epic.clearSubtasks();
-
         }
         subtasks.clear();
     }
@@ -52,7 +51,6 @@ public class InMemoryTaskManager implements TaskManager {
         Task task = tasks.get(id);
         if (task != null) {
             historyManager.add(task);
-
         }
         return task;
     }
@@ -62,7 +60,6 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(id);
         if (epic != null) {
             historyManager.add(epic);
-
         }
         return epic;
     }
@@ -72,7 +69,6 @@ public class InMemoryTaskManager implements TaskManager {
         Subtask subtask = subtasks.get(id);
         if (subtask != null) {
             historyManager.add(subtask);
-
         }
         return subtask;
     }
@@ -101,7 +97,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             epic.addSubtaskId(subtask.getId());
             updateEpicStatus(epic);
-
         }
         return subtasks.get(subtask.getId());
     }
@@ -110,7 +105,6 @@ public class InMemoryTaskManager implements TaskManager {
     public Task updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
             return tasks.put(task.getId(), task);
-
         }
         return null;
     }
@@ -121,7 +115,6 @@ public class InMemoryTaskManager implements TaskManager {
             epics.put(epic.getId(), epic);
             updateEpicStatus(epic);
             return epics.get(epic.getId());
-
         }
         return null;
     }
@@ -132,7 +125,6 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.put(subtask.getId(), subtask);
             updateEpicStatus(epics.get(subtask.getEpicId()));
             return subtasks.get(subtask.getId());
-
         }
         return null;
     }
@@ -148,7 +140,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             for (int subId : epic.getSubtaskIds()) {
                 subtasks.remove(subId);
-
             }
 
         }
@@ -162,7 +153,6 @@ public class InMemoryTaskManager implements TaskManager {
             if (epic != null) {
                 epic.removeSubtaskId(id);
                 updateEpicStatus(epic);
-
             }
 
         }
@@ -175,7 +165,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             for (int subId : epic.getSubtaskIds()) {
                 result.add(subtasks.get(subId));
-
             }
 
         }
@@ -187,7 +176,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtaskList.isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
-
         }
 
         boolean allNew = true;
@@ -212,7 +200,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         } else {
             epic.setStatus(Status.IN_PROGRESS);
-
         }
     }
 

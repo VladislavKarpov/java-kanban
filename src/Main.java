@@ -35,7 +35,6 @@ public class Main {
         System.out.println("\n---- Загруженные задачи ----");
         for (Task task : loadedManager.getAllTasks()) {
             System.out.println(task);
-
         }
 
         System.out.println("\n---- Загруженные эпики ----");
@@ -47,13 +46,11 @@ public class Main {
         System.out.println("\n---- Загруженные подзадачи ----");
         for (Subtask s : loadedManager.getAllSubtasks()) {
             System.out.println(s);
-
         }
 
         System.out.println("\n---- История просмотров ----");
         for (Task t : loadedManager.getHistory()) {
             System.out.println(t);
-
         }
 
     }
@@ -62,7 +59,6 @@ public class Main {
         System.out.println("История просмотров:");
         for (Task t : manager.getHistory()) {
             System.out.println(t);
-
         }
     }
 }

@@ -12,7 +12,7 @@ public class TaskTest {
     @Test
     void testStatusSetAndGet() {
         Task task = new Task("Task", "Desc", Status.IN_PROGRESS);
-        assertEquals(Status.NEW, task.getStatus(), "Статус игнорируется и устанавливается NEW");
+        assertEquals(Status.IN_PROGRESS, task.getStatus(), "Статус должен устанавливаться из конструктора");
 
         task.setStatus(Status.DONE);
         assertEquals(Status.DONE, task.getStatus());

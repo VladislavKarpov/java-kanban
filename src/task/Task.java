@@ -1,10 +1,15 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     private String name;
     private String description;
     private int id;
     private Status status;
+    Duration duration;
+    LocalDateTime startTime;
 
 
     public Task(String name, String description) {
@@ -14,7 +19,7 @@ public class Task {
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
-        this.status = Status.NEW;
+        this.status = status;
     }
 
     public int getId() {
@@ -51,6 +56,32 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            throw new IllegalStateException("Не задано время начала задачи.");
+        }
+        if (duration == null) {
+            throw new IllegalStateException("Не задана продолжительность задачи.");
+        }
+        return startTime.plus(duration);
     }
 
     @Override

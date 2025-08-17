@@ -2,61 +2,97 @@ package manager;
 
 import task.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class TaskConverter {
 
     public static String toString(Task task) {
-        StringBuilder sb = new StringBuilder();
-        String type;
-
-        if (task instanceof Epic) {
-            type = "EPIC";
-            sb.append(String.format("%d,%s,%s,%s,%s", task.getId(), type, task.getName(),
-                    task.getStatus(),task.getDescription()));
-
-        } else if (task instanceof Subtask) {
-            type = "SUBTASK";
-            int epicId = ((Subtask) task).getEpicId();
-            sb.append(String.format("%d,%s,%s,%s,%s,%d",task.getId(), type, task.getName(),
-                    task.getStatus(), task.getDescription(), epicId));
-
-        } else {
-            type = "TASK";
-            sb.append(String.format("%d,%s,%s,%s,%s", task.getId(), type, task.getName(),
-                    task.getStatus(), task.getDescription()));
-
+        String epicField = "";
+        if (task instanceof Subtask) {
+            epicField = String.valueOf(((Subtask) task).getEpicId());
         }
-        return sb.toString();
+
+        String start = "";
+        String duration = "";
+        if (!(task instanceof Epic)) {
+            start = task.getStartTime() == null ? "" : task.getStartTime().toString();
+            duration = task.getDuration() == null ? "" : String.valueOf(task.getDuration().toMinutes());
+        }
+
+        return String.join(",",
+                String.valueOf(task.getId()),
+                task.getType().name(),
+                escape(task.getName()),
+                task.getStatus().name(),
+                escape(task.getDescription()),
+                epicField,
+                start,
+                duration
+        );
     }
 
     public static Task fromString(String value) {
-        String[] fields = value.split(",", -1);
-        int id = Integer.parseInt(fields[0]);
-        TaskTypes type = TaskTypes.valueOf(fields[1]);
-        String name  = fields[2];
-        Status status = Status.valueOf(fields[3]);
-        String description = fields[4];
+        String[] f = value.split(",", -1); // -1 → чтобы пустые значения не отбрасывались
 
-        return switch (type) {
+        int id = Integer.parseInt(f[0]);
+        TaskTypes type = TaskTypes.valueOf(f[1]);
+        String name = unescape(f[2]);
+        Status status = Status.valueOf(f[3]);
+        String description = unescape(f[4]);
+        String epicField = f[5];
+        String startField = f[6];
+        String durationField = f[7];
+
+        LocalDateTime start = startField.isBlank() ? null : LocalDateTime.parse(startField);
+        Duration duration = durationField.isBlank() ? null : Duration.ofMinutes(Long.parseLong(durationField));
+
+        switch (type) {
             case TASK -> {
-                Task task = new Task(name, description, status);
-                task.setId(id);
-                yield task;
+                Task t = new Task(name, description, status);
+                t.setId(id);
+                t.setStartTime(start);
+                t.setDuration(duration);
+                return t;
             }
             case EPIC -> {
-                Epic epic = new Epic(name, description);
-                epic.setId(id);
-                epic.setStatus(status);
-                yield epic;
+                Epic e = new Epic(name, description);
+                e.setId(id);
+                e.setStatus(status);
+                // duration, startTime и endTime у эпика считаются по подзадачам → не загружаем их
+                return e;
             }
             case SUBTASK -> {
-                int epicId = Integer.parseInt(fields[5]);
-                Subtask subtask = new Subtask(name, description, epicId, status);
-                subtask.setId(id);
-                yield subtask;
+                int epicId = Integer.parseInt(epicField);
+                Subtask s = new Subtask(name, description, epicId, status);
+                s.setId(id);
+                s.setStartTime(start);
+                s.setDuration(duration);
+                return s;
             }
             default -> throw new IllegalArgumentException("Неизвестный тип задачи " + type);
+        }
+    }
 
-        };
+    private static String escape(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace(",", "\\,");
+    }
 
+    private static String unescape(String s) {
+        if (s == null) return "";
+        StringBuilder res = new StringBuilder();
+        boolean esc = false;
+        for (char c : s.toCharArray()) {
+            if (esc) {
+                res.append(c);
+                esc = false;
+            } else if (c == '\\') {
+                esc = true;
+            } else {
+                res.append(c);
+            }
+        }
+        return res.toString();
     }
 }

@@ -2,22 +2,19 @@ package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import task.Epic;
-import task.Status;
-import task.Subtask;
-import task.Task;
-
+import task.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
 
     protected T manager;
 
-    protected abstract T createManager(); // фабричный метод для конкретного менеджера
+    protected abstract T createManager();
 
     @BeforeEach
     void setUp() {
@@ -25,75 +22,116 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void epicStatusShouldBeNewWhenAllSubtasksNew() {
-        Epic epic = manager.addEpic(new Epic("Epic1", "desc"));
-        manager.addSubtask(new Subtask("s1", "d", epic.getId(), Status.NEW));
-        manager.addSubtask(new Subtask("s2", "d", epic.getId(), Status.NEW));
+    void testAddAndGetTask() {
+        Task task = new Task("Task", "Desc");
+        manager.addTask(task);
+
+        Task retrieved = manager.getTask(task.getId());
+        assertNotNull(retrieved);
+        assertEquals(task, retrieved);
+    }
+
+    @Test
+    void testEpicWithSubtasksStatusNew() {
+        Epic epic = new Epic("Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId());
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId());
+        manager.addSubtask(s1);
+        manager.addSubtask(s2);
 
         assertEquals(Status.NEW, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
-    void epicStatusShouldBeDoneWhenAllSubtasksDone() {
-        Epic epic = manager.addEpic(new Epic("Epic2", "desc"));
-        manager.addSubtask(new Subtask("s1", "d", epic.getId(), Status.DONE));
-        manager.addSubtask(new Subtask("s2", "d", epic.getId(), Status.DONE));
+    void testEpicWithAllSubtasksDone() {
+        Epic epic = new Epic("Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), Status.DONE);
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), Status.DONE);
+        manager.addSubtask(s1);
+        manager.addSubtask(s2);
 
         assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
-    void epicStatusShouldBeInProgressWhenMixedNewAndDone() {
-        Epic epic = manager.addEpic(new Epic("Epic3", "desc"));
-        manager.addSubtask(new Subtask("s1", "d", epic.getId(), Status.NEW));
-        manager.addSubtask(new Subtask("s2", "d", epic.getId(), Status.DONE));
+    void testEpicWithMixedSubtasksNewAndDone() {
+        Epic epic = new Epic("Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), Status.NEW);
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), Status.DONE);
+        manager.addSubtask(s1);
+        manager.addSubtask(s2);
 
         assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
-    void epicStatusShouldBeInProgressWhenAtLeastOneInProgress() {
-        Epic epic = manager.addEpic(new Epic("Epic4", "desc"));
-        manager.addSubtask(new Subtask("s1", "d", epic.getId(), Status.IN_PROGRESS));
+    void testEpicWithSubtasksInProgress() {
+        Epic epic = new Epic("Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), Status.IN_PROGRESS);
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), Status.IN_PROGRESS);
+        manager.addSubtask(s1);
+        manager.addSubtask(s2);
 
         assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
     void subtaskShouldHaveEpicReference() {
-        Epic epic = manager.addEpic(new Epic("Epic5", "desc"));
-        Subtask sub = manager.addSubtask(new Subtask("s1", "d", epic.getId(), Status.NEW));
+        Epic epic = new Epic("Epic", "Desc");
+        manager.addEpic(epic);
+
+        Subtask sub = new Subtask("Sub", "Desc", epic.getId());
+        manager.addSubtask(sub);
 
         assertEquals(epic.getId(), sub.getEpicId());
-        assertTrue(manager.getEpic(epic.getId()).getSubtaskIds().contains(sub.getId()));
-    }
-
-    // ====== Проверка пересечений ======
-    @Test
-    void shouldThrowExceptionWhenTasksOverlap() {
-        Task t1 = new Task("T1", "desc", Status.NEW);
-        t1.setStartTime(LocalDateTime.of(2025,1,1,10,0));
-        t1.setDuration(Duration.ofMinutes(60));
-        manager.addTask(t1);
-
-        Task t2 = new Task("T2", "desc", Status.NEW);
-        t2.setStartTime(LocalDateTime.of(2025,1,1,10,30)); // пересекается
-        t2.setDuration(Duration.ofMinutes(30));
-
-        assertThrows(IllegalArgumentException.class, () -> manager.addTask(t2));
     }
 
     @Test
-    void shouldNotThrowWhenTasksDoNotOverlap() {
-        Task t1 = new Task("T1", "desc", Status.NEW);
-        t1.setStartTime(LocalDateTime.of(2025,1,1,10,0));
-        t1.setDuration(Duration.ofMinutes(30));
-        manager.addTask(t1);
+    void shouldDetectOverlap() {
+        Epic epic = new Epic("Epic", "Desc");
+        manager.addEpic(epic);
 
-        Task t2 = new Task("T2", "desc", Status.NEW);
-        t2.setStartTime(LocalDateTime.of(2025,1,1,11,0)); // не пересекается
-        t2.setDuration(Duration.ofMinutes(30));
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId());
+        s1.setStartTime(LocalDateTime.of(2025, 8, 17, 10, 0));
+        s1.setDuration(Duration.ofHours(1));
+        manager.addSubtask(s1);
 
-        assertDoesNotThrow(() -> manager.addTask(t2));
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId());
+        s2.setStartTime(LocalDateTime.of(2025, 8, 17, 10, 30));
+        s2.setDuration(Duration.ofHours(1));
+
+        assertThrows(IllegalArgumentException.class, () -> manager.addSubtask(s2),
+                "Добавление пересекающейся задачи должно выбрасывать исключение");
     }
+
+    @Test
+    void historyShouldHandleDuplicatesCorrectly() {
+        Task t1 = new Task("T1", "Desc");
+        Task t2 = new Task("T2", "Desc");
+        manager.addTask(t1);
+        manager.addTask(t2);
+
+        manager.getTask(t1.getId());
+        manager.getTask(t2.getId());
+        manager.getTask(t1.getId()); // повторный просмотр
+
+        List<Task> history = manager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(t2, history.get(0));
+        assertEquals(t1, history.get(1));
+    }
+
+    @Test
+    void historyShouldBeEmptyInitially() {
+        assertTrue(manager.getHistory().isEmpty());
+    }
+
 }

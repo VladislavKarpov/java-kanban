@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Epic extends Task {
 
@@ -13,8 +14,8 @@ public class Epic extends Task {
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
-        this.duration = Duration.ZERO;
-        this.startTime = null;
+        this.setDuration(Duration.ZERO);
+        this.setStartTime(null);
         this.endTime = null;
     }
 
@@ -34,10 +35,10 @@ public class Epic extends Task {
         subtaskIds.clear();
     }
 
-    public void updateTimeFields(List<Subtask> subtasks) {
-        if (subtasks.isEmpty()) {
-            this.duration = Duration.ZERO;
-            this.startTime = null;
+    public void updateTimeFields(Map<Integer, Subtask> subtasks) {
+        if (subtaskIds.isEmpty()) {
+            this.setDuration(Duration.ZERO);
+            this.setStartTime(null);
             this.endTime = null;
             return;
         }
@@ -46,7 +47,8 @@ public class Epic extends Task {
         LocalDateTime earliest = null;
         LocalDateTime latest = null;
 
-        for (Subtask sTask : subtasks) {
+        for (Integer subtaskId : subtaskIds) {
+            Subtask sTask = subtasks.get(subtaskId);
             if (sTask.getStartTime() == null || sTask.getDuration() == null) continue;
 
             total = total.plus(sTask.getDuration());
@@ -62,8 +64,8 @@ public class Epic extends Task {
             }
         }
 
-        this.duration = total;
-        this.startTime = earliest;
+        this.setDuration(total);
+        this.setStartTime(earliest);
         this.endTime = latest;
     }
 
@@ -72,6 +74,7 @@ public class Epic extends Task {
         return TaskTypes.EPIC;
     }
 
+
     @Override
     public String toString() {
         return "Epic{" +
@@ -79,8 +82,8 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", startTime=" + startTime +
-                ", duration=" + duration +
+                ", startTime=" + getStartTime() +
+                ", duration=" + getDuration() +
                 ", endTime=" + endTime +
                 ", subtasks=" + subtaskIds +
                 '}';

@@ -101,44 +101,44 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Task addTask(Task task) {
-        Task t = super.addTask(task);
+        Task addedTask = super.addTask(task);
         save();
-        return t;
+        return addedTask;
     }
 
     @Override
     public Epic addEpic(Epic epic) {
-        Epic e = super.addEpic(epic);
+        Epic addedEpic = super.addEpic(epic);
         save();
-        return e;
+        return addedEpic;
     }
 
     @Override
     public Subtask addSubtask(Subtask subtask) {
-        Subtask s = super.addSubtask(subtask);
+        Subtask addedSubtask = super.addSubtask(subtask);
         save();
-        return s;
+        return addedSubtask;
     }
 
     @Override
     public Task updateTask(Task task) {
-        Task t = super.updateTask(task);
+        Task updatedTask = super.updateTask(task);
         save();
-        return t;
+        return updatedTask;
     }
 
     @Override
     public Epic updateEpic(Epic epic) {
-        Epic e = super.updateEpic(epic);
+        Epic updatedEpic = super.updateEpic(epic);
         save();
-        return e;
+        return updatedEpic;
     }
 
     @Override
     public Subtask updateSubtask(Subtask subtask) {
-        Subtask s = super.updateSubtask(subtask);
+        Subtask updatedSubtask = super.updateSubtask(subtask);
         save();
-        return s;
+        return updatedSubtask;
     }
 
     @Override
@@ -161,23 +161,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Task getTask(int id) {
-        Task t = super.getTask(id);
+        Task task = super.getTask(id);
         save();
-        return t;
+        return task;
     }
 
     @Override
     public Epic getEpic(int id) {
-        Epic e = super.getEpic(id);
+        Epic epic = super.getEpic(id);
         save();
-        return e;
+        return epic;
     }
 
     @Override
     public Subtask getSubtask(int id) {
-        Subtask s = super.getSubtask(id);
+        Subtask subtask = super.getSubtask(id);
         save();
-        return s;
+        return subtask;
     }
 
 }

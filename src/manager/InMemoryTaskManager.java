@@ -13,55 +13,55 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private final Comparator<Task> byStartThenId = Comparator
+    protected final Comparator<Task> byStartThenId = Comparator
             .comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparingInt(Task::getId);
 
     private final NavigableSet<Task> prioritized = new TreeSet<>(byStartThenId);
 
-    void addToPrioritized(Task t) {
-        if (t.getType() == TaskTypes.EPIC) return;
-        if (t.getStartTime() != null && t.getDuration() != null) {
-            prioritized.add(t);
+    protected void addToPrioritized(Task task) {
+        if (task.getType() == TaskTypes.EPIC) return;
+        if (task.getStartTime() != null && task.getDuration() != null) {
+            prioritized.add(task);
         }
 
     }
 
-    private void removeFromPrioritized(int id) {
-        prioritized.removeIf(t -> t.getId() == id);
+    protected void removeFromPrioritized(int id) {
+        prioritized.removeIf(task -> task.getId() == id);
     }
 
-    private void updateInPrioritized(Task t) {
-        removeFromPrioritized(t.getId());
-        addToPrioritized(t);
+    protected void updateInPrioritized(Task task) {
+        removeFromPrioritized(task.getId());
+        addToPrioritized(task);
     }
 
-    private boolean alignments(Task a, Task b) {
-        if (a.getStartTime() == null || a.getDuration() == null) return false;
-        if (b.getStartTime() == null || b.getDuration() == null) return false;
-        LocalDateTime aStart = a.getStartTime();
-        LocalDateTime aEnd = a.getEndTime();
-        LocalDateTime bStart = b.getStartTime();
-        LocalDateTime bEnd = b.getEndTime();
+    protected boolean isOverlapping(Task aTask, Task bTask) {
+        if (aTask.getStartTime() == null || aTask.getDuration() == null) return false;
+        if (bTask.getStartTime() == null || bTask.getDuration() == null) return false;
+        LocalDateTime aStart = aTask.getStartTime();
+        LocalDateTime aEnd = aTask.getEndTime();
+        LocalDateTime bStart = bTask.getStartTime();
+        LocalDateTime bEnd = bTask.getEndTime();
         return aStart.isBefore(bEnd) && bStart.isBefore(aEnd);
     }
 
-    private void ensureNoAlignment(Task candidate) {
+    protected void ensureNoAlignment(Task candidate) {
         if (candidate.getStartTime() == null || candidate.getDuration() == null) return;
 
         boolean hashAlignment = prioritized.stream()
                 .filter(t -> t.getId() != candidate.getId())
-                .anyMatch(t -> alignments(candidate, t));
+                .anyMatch(t -> isOverlapping(candidate, t));
         if (hashAlignment) {
             throw new IllegalArgumentException("Задачи пересекаются по времени: " + candidate);
         }
     }
 
-    void updateEpicStatus(Epic epic) {
+    protected void updateEpicStatus(Epic epic) {
         List<Subtask> subtaskList = getSubtasksOfEpic(epic.getId());
         if (subtaskList.isEmpty()) {
             epic.setStatus(Status.NEW);
-            epic.updateTimeFields(List.of());
+            epic.updateTimeFields(subtasks);
             return;
         }
 
@@ -77,7 +77,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
-        epic.updateTimeFields(subtaskList);
+        epic.updateTimeFields(subtasks);
     }
 
     @Override

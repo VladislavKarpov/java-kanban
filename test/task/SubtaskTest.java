@@ -6,9 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SubtaskTest {
 
-    //проверка на создание подзадачи (поля корректно сохраняются и доступны)
     @Test
-    void subtaskCreationAndGettersShouldWork() {
+    public void subtaskCreationAndGettersShouldWork() {
         int epicId = 10;
         Subtask subtask = new Subtask("Test Subtask", "Description", epicId);
 
@@ -18,9 +17,8 @@ class SubtaskTest {
         assertEquals(Status.NEW, subtask.getStatus()); // статус по умолчанию
     }
 
-    //проверки на id:
     @Test
-    void subtasksWithSameIdShouldBeEqual() {
+    public void subtasksWithSameIdShouldBeEqual() {
         Subtask subtask1 = new Subtask("Subtask1", "Desc1", 1);
         Subtask subtask2 = new Subtask("Subtask2", "Desc2", 1);
 
@@ -31,9 +29,8 @@ class SubtaskTest {
         assertEquals(subtask1.hashCode(), subtask2.hashCode());
     }
 
-    //проверка, что toString содержит нужную информацию
     @Test
-    void toStringShouldContainFields() {
+    public void toStringShouldContainFields() {
         Subtask subtask = new Subtask("Subtask", "Desc", 1, Status.NEW);
         subtask.setId(50);
 

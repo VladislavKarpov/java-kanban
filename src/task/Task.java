@@ -8,8 +8,8 @@ public class Task {
     private String description;
     private int id;
     private Status status;
-    Duration duration;
-    LocalDateTime startTime;
+    private Duration duration;
+    private LocalDateTime startTime;
 
 
     public Task(String name, String description) {

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HistoryConverter {
-    public static  String toString(HistoryManager historyManager) {
+    public static String toString(HistoryManager historyManager) {
         List<Task> history = historyManager.getHistory();
         return history.stream()
                 .map(task -> String.valueOf(task.getId()))

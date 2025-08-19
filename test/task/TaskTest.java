@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TaskTest {
 
     @Test
-    void testStatusSetAndGet() {
+    public void testStatusSetAndGet() {
         Task task = new Task("Task", "Desc", Status.IN_PROGRESS);
         assertEquals(Status.IN_PROGRESS, task.getStatus(), "Статус должен устанавливаться из конструктора");
 
@@ -22,7 +22,7 @@ public class TaskTest {
     //если идти по "списку нюансов" из ТЗ:
 
     @Test
-    void tasksWithSameIdShouldBeEqual() {
+    public void tasksWithSameIdShouldBeEqual() {
         Task task1 = new Task("A", "B");
         Task task2 = new Task("C", "D");
         task1.setId(1);
@@ -32,7 +32,7 @@ public class TaskTest {
     }
 
     @Test
-    void epicAndSubtaskWithSameIdShouldBeEqualToSameType() {
+    public void epicAndSubtaskWithSameIdShouldBeEqualToSameType() {
         Epic epic1 = new Epic("Epic1", "Description");
         Epic epic2 = new Epic("Epic2", "OtherDesc");
         epic1.setId(42);
@@ -49,7 +49,7 @@ public class TaskTest {
     }
 
     @Test
-    void changingTaskWithSetterShouldNotBreakManagerConsistency() {
+    public void changingTaskWithSetterShouldNotBreakManagerConsistency() {
         Task task = new Task("Task", "desc");
 
         TaskManager manager = new InMemoryTaskManager();
@@ -67,6 +67,5 @@ public class TaskTest {
         assertEquals("Changed!", retrieved.getName());
         assertEquals(Status.DONE, retrieved.getStatus());
     }
-
 
 }

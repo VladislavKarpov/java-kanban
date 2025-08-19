@@ -17,12 +17,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected abstract T createManager();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         manager = createManager();
     }
 
     @Test
-    void testAddAndGetTask() {
+    public void testAddAndGetTask() {
         Task task = new Task("Task", "Desc");
         manager.addTask(task);
 
@@ -32,7 +32,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicWithSubtasksStatusNew() {
+    public void testEpicWithSubtasksStatusNew() {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
@@ -45,7 +45,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicWithAllSubtasksDone() {
+    public void testEpicWithAllSubtasksDone() {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
@@ -58,7 +58,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicWithMixedSubtasksNewAndDone() {
+    public void testEpicWithMixedSubtasksNewAndDone() {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
@@ -71,7 +71,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void testEpicWithSubtasksInProgress() {
+    public void testEpicWithSubtasksInProgress() {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
@@ -84,7 +84,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void subtaskShouldHaveEpicReference() {
+    public void subtaskShouldHaveEpicReference() {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
@@ -95,7 +95,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void shouldDetectOverlap() {
+    public void shouldDetectOverlap() {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
@@ -113,7 +113,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void historyShouldHandleDuplicatesCorrectly() {
+    public void historyShouldHandleDuplicatesCorrectly() {
         Task t1 = new Task("T1", "Desc");
         Task t2 = new Task("T2", "Desc");
         manager.addTask(t1);
@@ -130,7 +130,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void historyShouldBeEmptyInitially() {
+    public void historyShouldBeEmptyInitially() {
         assertTrue(manager.getHistory().isEmpty());
     }
 

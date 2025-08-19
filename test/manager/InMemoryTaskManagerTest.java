@@ -1,6 +1,5 @@
 package manager;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import task.*;
 
@@ -10,13 +9,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
-
-    private TaskManager manager;
-
-    @BeforeEach
-    public void setUp() {
-        manager = createManager();
-    }
 
     @Override
     protected InMemoryTaskManager createManager() {

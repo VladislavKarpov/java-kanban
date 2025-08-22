@@ -7,9 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EpicTest {
 
-    //если идти по "списку нюансов" из ТЗ:
     @Test
-    void epicCannotContainItselfAsSubtask() {
+    public void epicCannotContainItselfAsSubtask() {
         Epic epic = new Epic("Epic", "Desc");
         epic.setId(10);
 

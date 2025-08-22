@@ -3,6 +3,8 @@ import manager.TaskManager;
 import task.*;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -13,6 +15,7 @@ public class Main {
 
         Task task1 = new Task("Обучение", "Сделать задачу 7 спринта");
         Task task2 = new Task("Отдых", "Поехать на отдых");
+
         originalManager.addTask(task1);
         originalManager.addTask(task2);
 
@@ -20,7 +23,11 @@ public class Main {
         originalManager.addEpic(epic);
 
         Subtask subtask1 = new Subtask("Купить палатку", "Почитать отзывы на возон", epic.getId());
+        subtask1.setStartTime(LocalDateTime.of(2025, 8, 17, 10, 0));
+        subtask1.setDuration(Duration.ofMinutes(90));
+
         Subtask subtask2 = new Subtask("Собрать походный инвентарь", "Котелок", epic.getId());
+
         originalManager.addSubtask(subtask1);
         originalManager.addSubtask(subtask2);
 

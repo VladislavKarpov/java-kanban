@@ -2,7 +2,7 @@ package manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import task.Status;
+import task.TaskStatus;
 import task.Task;
 
 import java.util.List;
@@ -25,9 +25,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldAddTasksToHistoryInCorrectOrder() {
-        Task task1 = new Task("Task 1", "Desc 1", Status.NEW);
+        Task task1 = new Task("Task 1", "Desc 1", TaskStatus.NEW);
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Desc 2", Status.NEW);
+        Task task2 = new Task("Task 2", "Desc 2", TaskStatus.NEW);
         task2.setId(2);
 
         historyManager.add(task1);
@@ -41,9 +41,9 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldNotAddDuplicatesAndMoveTaskToEnd() {
-        Task task1 = new Task("Task 1", "Desc 1", Status.NEW);
+        Task task1 = new Task("Task 1", "Desc 1", TaskStatus.NEW);
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Desc 2", Status.NEW);
+        Task task2 = new Task("Task 2", "Desc 2", TaskStatus.NEW);
         task2.setId(2);
 
         historyManager.add(task1);
@@ -58,11 +58,11 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void shouldRemoveTaskFromHistoryById() {
-        Task task1 = new Task("Task 1", "Desc 1", Status.NEW);
+        Task task1 = new Task("Task 1", "Desc 1", TaskStatus.NEW);
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Desc 2", Status.NEW);
+        Task task2 = new Task("Task 2", "Desc 2", TaskStatus.NEW);
         task2.setId(2);
-        Task task3 = new Task("Task 3", "Desc 3", Status.NEW);
+        Task task3 = new Task("Task 3", "Desc 3", TaskStatus.NEW);
         task3.setId(3);
 
         historyManager.add(task1);

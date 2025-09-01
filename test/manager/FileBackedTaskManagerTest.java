@@ -82,7 +82,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Nested
-    class EpicStatusTests {
+    class EpicTaskStatusTests {
 
         @Test
         public void epicStatusShouldBeNewWhenAllSubtasksNew() {
@@ -90,12 +90,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
             Epic epic = new Epic("Epic", "Description");
             manager.addEpic(epic);
 
-            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), Status.NEW);
-            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), Status.NEW);
+            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.NEW);
+            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.NEW);
             manager.addSubtask(sub1);
             manager.addSubtask(sub2);
 
-            assertEquals(Status.NEW, manager.getEpic(epic.getId()).getStatus());
+            assertEquals(TaskStatus.NEW, manager.getEpic(epic.getId()).getStatus());
         }
 
         @Test
@@ -104,12 +104,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
             Epic epic = new Epic("Epic", "Description");
             manager.addEpic(epic);
 
-            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), Status.DONE);
-            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), Status.DONE);
+            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.DONE);
+            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.DONE);
             manager.addSubtask(sub1);
             manager.addSubtask(sub2);
 
-            assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
+            assertEquals(TaskStatus.DONE, manager.getEpic(epic.getId()).getStatus());
         }
 
         @Test
@@ -118,12 +118,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
             Epic epic = new Epic("Epic", "Description");
             manager.addEpic(epic);
 
-            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), Status.NEW);
-            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), Status.DONE);
+            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.NEW);
+            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.DONE);
             manager.addSubtask(sub1);
             manager.addSubtask(sub2);
 
-            assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
+            assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
         }
 
         @Test
@@ -132,12 +132,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
             Epic epic = new Epic("Epic", "Description");
             manager.addEpic(epic);
 
-            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), Status.IN_PROGRESS);
-            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), Status.IN_PROGRESS);
+            Subtask sub1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.IN_PROGRESS);
+            Subtask sub2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.IN_PROGRESS);
             manager.addSubtask(sub1);
             manager.addSubtask(sub2);
 
-            assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
+            assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
         }
     }
 

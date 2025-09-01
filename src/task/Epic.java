@@ -13,7 +13,7 @@ public class Epic extends Task {
 
 
     public Epic(String name, String description) {
-        super(name, description, Status.NEW);
+        super(name, description, TaskStatus.NEW);
         this.setDuration(Duration.ZERO);
         this.setStartTime(null);
         this.endTime = null;

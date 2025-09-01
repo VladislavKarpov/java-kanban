@@ -7,19 +7,19 @@ public class Task {
     private String name;
     private String description;
     private int id;
-    private Status status;
+    private TaskStatus taskStatus;
     private Duration duration;
     private LocalDateTime startTime;
 
 
     public Task(String name, String description) {
-        this(name, description, Status.NEW);
+        this(name, description, TaskStatus.NEW);
     }
 
-    public Task(String name, String description, Status status) {
+    public Task(String name, String description, TaskStatus taskStatus) {
         this.name = name;
         this.description = description;
-        this.status = status;
+        this.taskStatus = taskStatus;
     }
 
     public int getId() {
@@ -30,12 +30,12 @@ public class Task {
         this.id = id;
     }
 
-    public Status getStatus() {
-        return status;
+    public TaskStatus getStatus() {
+        return taskStatus;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public String getName() {
@@ -103,7 +103,7 @@ public class Task {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
-                ", status=" + status +
+                ", status=" + taskStatus +
                 '}';
     }
 }

@@ -14,7 +14,7 @@ class SubtaskTest {
         assertEquals("Test Subtask", subtask.getName());
         assertEquals("Description", subtask.getDescription());
         assertEquals(epicId, subtask.getEpicId());
-        assertEquals(Status.NEW, subtask.getStatus()); // статус по умолчанию
+        assertEquals(TaskStatus.NEW, subtask.getStatus()); // статус по умолчанию
     }
 
     @Test
@@ -31,7 +31,7 @@ class SubtaskTest {
 
     @Test
     public void toStringShouldContainFields() {
-        Subtask subtask = new Subtask("Subtask", "Desc", 1, Status.NEW);
+        Subtask subtask = new Subtask("Subtask", "Desc", 1, TaskStatus.NEW);
         subtask.setId(50);
 
         String str = subtask.toString();

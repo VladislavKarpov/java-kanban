@@ -70,22 +70,22 @@ public class InMemoryTaskManager implements TaskManager {
     protected void updateEpicStatus(Epic epic) {
         List<Subtask> subtaskList = getSubtasksOfEpic(epic.getId());
         if (subtaskList.isEmpty()) {
-            epic.setStatus(Status.NEW);
+            epic.setStatus(TaskStatus.NEW);
             epic.updateTimeFields(subtasks);
             return;
         }
 
         boolean allNew = subtaskList.stream()
-                .allMatch(sTask -> sTask.getStatus() == Status.NEW);
+                .allMatch(sTask -> sTask.getStatus() == TaskStatus.NEW);
         boolean allDone = subtaskList.stream()
-                .allMatch(sTask -> sTask.getStatus() == Status.DONE);
+                .allMatch(sTask -> sTask.getStatus() == TaskStatus.DONE);
 
         if (allDone) {
-            epic.setStatus(Status.DONE);
+            epic.setStatus(TaskStatus.DONE);
         } else if (allNew) {
-            epic.setStatus(Status.NEW);
+            epic.setStatus(TaskStatus.NEW);
         } else {
-            epic.setStatus(Status.IN_PROGRESS);
+            epic.setStatus(TaskStatus.IN_PROGRESS);
         }
         epic.updateTimeFields(subtasks);
     }

@@ -19,12 +19,14 @@ public class BaseHttpHandler {
         sendText(exchange, "{\"error\":\"Not Found\"}", 404);
     }
 
-    protected void sendHasInteractions(HttpExchange h, String msg) throws IOException {
-        sendText(h, "{\"error\":\"" + msg + "\"}", 406);
+    protected void sendServerError(HttpExchange exchange, Exception e) throws IOException {
+        sendText(exchange, "{\"error\":\"" + e.getMessage() + "\"}", 500);
     }
 
-    protected void sendServerError(HttpExchange h, Exception e) throws IOException {
-        sendText(h, "{\"error\":\"" + e.getMessage() + "\"}", 500);
+    protected void sendHasInteractions(HttpExchange exchange, String message) throws IOException {
+        String response = (message == null || message.isBlank())
+                ? "Task has time intersection with another task"
+                : message;
+        sendText(exchange, response, 406);
     }
-
 }

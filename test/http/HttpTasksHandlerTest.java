@@ -28,6 +28,7 @@ public class HttpTasksHandlerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        // ✅ используем новый InMemoryTaskManager для "чистой" базы задач
         manager = new InMemoryTaskManager();
         server = new HttpTaskServer(manager);
         server.start();
@@ -37,7 +38,9 @@ public class HttpTasksHandlerTest {
 
     @AfterEach
     public void tearDown() {
-        server.stop();
+        if (server != null) {
+            server.stop(); // ✅ обязательно останавливаем сервер, иначе зависнет порт
+        }
     }
 
     @Test
@@ -51,13 +54,14 @@ public class HttpTasksHandlerTest {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL))
+                .header("Content-Type", "application/json") // ✅ добавляем заголовок
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(201, response.statusCode(), "Ожидался статус 201 при создании задачи");
-        assertEquals(1, manager.getAllTasks().size());
+        assertEquals(1, manager.getAllTasks().size(), "В менеджере должна быть 1 задача");
     }
 
     @Test
@@ -69,14 +73,15 @@ public class HttpTasksHandlerTest {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
-        assertTrue(response.body().isEmpty() || response.body().equals("[]"), "Ожидался пустой список задач");
+        assertEquals(200, response.statusCode(), "Ожидался статус 200");
+        assertTrue(response.body().isEmpty() || response.body().equals("[]"),
+                "Ожидался пустой список задач");
     }
 
     @Test
     void testGetTaskByIdNotFound() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/999"))
+                .uri(URI.create(BASE_URL + "/999")) // ✅ исправлено, теперь правильный URL
                 .GET()
                 .build();
 

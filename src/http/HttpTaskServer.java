@@ -14,21 +14,20 @@ public class HttpTaskServer {
 
     private final TaskManager manager;
     private final HttpServer server;
-    private static Gson gson = createGson();
-    private final int port;
+    private static final Gson gson = createGson();
+    private static final int DEFAULT_PORT = 8080;
 
     public HttpTaskServer(TaskManager manager) throws IOException {
-        this(manager, 8080);
+        this(manager, DEFAULT_PORT);
     }
 
-    public HttpTaskServer(TaskManager manager, int port) throws IOException {
+    public HttpTaskServer(TaskManager manager, int DEFAULT_PORT) throws IOException {
         this.manager = manager;
-        this.port = port;
         this.server = initServer();
     }
 
     private HttpServer initServer() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(DEFAULT_PORT), 0);
 
         server.createContext("/tasks", new TaskHandler(manager, gson));
         server.createContext("/subtasks", new SubtasksHandler(manager, gson));
@@ -41,7 +40,7 @@ public class HttpTaskServer {
 
     public void start() {
         server.start();
-        System.out.println("HTTP-сервер запущен на порту " + port);
+        System.out.println("HTTP-сервер запущен на порту " + DEFAULT_PORT);
     }
 
     public void stop() {

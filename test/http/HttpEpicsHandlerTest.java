@@ -1,31 +1,23 @@
 package http;
 
-
 import org.junit.jupiter.api.Test;
-import task.Task;
-import task.TaskStatus;
+import task.Epic;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class HttpTasksHandlerTest extends BaseHttpHandlerTest {
+public class HttpEpicsHandlerTest extends BaseHttpHandlerTest {
 
     @Test
-    void shouldCreateTask() throws Exception {
-        Task task = new Task("Test Task", "Desc");
-        task.setStatus(TaskStatus.NEW);
-        task.setDuration(Duration.ofMinutes(30));
-        task.setStartTime(LocalDateTime.now());
-
-        String json = gson.toJson(task);
+    void shouldCreateEpic() throws Exception {
+        Epic epic = new Epic("Epic 1", "Epic Desc");
+        String json = gson.toJson(epic);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/tasks"))
+                .uri(URI.create(BASE_URL + "/epics"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
@@ -33,13 +25,16 @@ public class HttpTasksHandlerTest extends BaseHttpHandlerTest {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(201, response.statusCode());
-        assertEquals(1, manager.getAllTasks().size());
+        assertEquals(1, manager.getAllEpics().size());
     }
 
     @Test
-    void shouldReturnEmptyTasksList() throws Exception {
+    void shouldGetEpicSubtasks() throws Exception {
+        Epic epic = new Epic("Epic 1", "Epic Desc");
+        manager.addEpic(epic);
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/tasks"))
+                .uri(URI.create(BASE_URL + "/epics/" + epic.getId() + "/subtasks"))
                 .GET()
                 .build();
 
@@ -48,5 +43,4 @@ public class HttpTasksHandlerTest extends BaseHttpHandlerTest {
         assertEquals(200, response.statusCode());
         assertEquals("[]", response.body());
     }
-
 }

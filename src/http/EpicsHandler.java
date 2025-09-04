@@ -2,23 +2,19 @@ package http;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 import task.Epic;
+import task.Subtask;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
-
-    private TaskManager manager;
-    private Gson gson;
+public class EpicsHandler extends BaseHttpHandler {
 
     public EpicsHandler(TaskManager manager, Gson gson) {
-        this.manager = manager;
-        this.gson = gson;
+        super(manager, gson);
     }
 
     @Override
@@ -27,42 +23,56 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
             String method = exchange.getRequestMethod();
             String path = exchange.getRequestURI().getPath();
 
-            if ("GET".equals(method)) {
-                if (path.matches("/epics/\\d+")) {
-                    int id = Integer.parseInt(path.split("/")[2]);
-                    Epic epic = manager.getEpic(id);
-                    if (epic == null) {
-                        sendNotFound(exchange);
-                        return;
-                    }
-                    sendText(exchange, gson.toJson(epic), 200);
-                } else {
-                    List<Epic> epics = manager.getAllEpics();
-                    sendText(exchange, gson.toJson(epics), 200);
-                }
-            } else if ("POST".equals(method)) {
-                InputStream is = exchange.getRequestBody();
-                String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                Epic epic = gson.fromJson(body, Epic.class);
-                if (epic.getId() == 0) {
-                    manager.addEpic(epic);
-                } else {
-                    manager.updateEpic(epic);
-                }
-                sendText(exchange, "{}", 201);
-            } else if ("DELETE".equals(method)) {
-                if (path.matches("/epics/\\d+")) {
-                    int id = Integer.parseInt(path.split("/")[2]);
-                    manager.deleteEpic(id);
-                } else {
-                    manager.deleteAllEpics();
-                }
-                sendText(exchange, "{}", 201);
-            } else {
-                sendText(exchange, "{\"error\":\"Method Not Allowed\"}", 405);
+            switch (method) {
+                case "GET" -> handleGet(exchange, path);
+                case "POST" -> handlePost(exchange);
+                case "DELETE" -> handleDelete(exchange, path);
+                default -> sendMethodNotAllowed(exchange);
             }
         } catch (Exception e) {
             sendServerError(exchange, e);
         }
+    }
+
+    private void handleGet(HttpExchange exchange, String path) throws IOException {
+        if (path.matches("/epics/\\d+/subtasks")) {
+            int id = Integer.parseInt(path.split("/")[2]);
+            List<Subtask> subtasks = manager.getSubtasksOfEpic(id);
+            sendOk(exchange, gson.toJson(subtasks));
+        } else if (path.matches("/epics/\\d+")) {
+            int id = Integer.parseInt(path.split("/")[2]);
+            Epic epic = manager.getEpic(id);
+            if (epic == null) {
+                sendNotFound(exchange);
+            } else {
+                sendOk(exchange, gson.toJson(epic));
+            }
+        } else {
+            List<Epic> epics = manager.getAllEpics();
+            sendOk(exchange, gson.toJson(epics));
+        }
+    }
+
+    private void handlePost(HttpExchange exchange) throws IOException {
+        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        Epic epic = gson.fromJson(body, Epic.class);
+
+        if (epic.getId() == 0) {
+            manager.addEpic(epic);
+        } else {
+            manager.updateEpic(epic);
+        }
+
+        sendCreated(exchange, "{}");
+    }
+
+    private void handleDelete(HttpExchange exchange, String path) throws IOException {
+        if (path.matches("/epics/\\d+")) {
+            int id = Integer.parseInt(path.split("/")[2]);
+            manager.deleteEpic(id);
+        } else {
+            manager.deleteAllEpics();
+        }
+        sendNoContent(exchange);
     }
 }

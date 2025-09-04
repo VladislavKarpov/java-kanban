@@ -18,10 +18,6 @@ public class HttpTaskServer {
     private static final int DEFAULT_PORT = 8080;
 
     public HttpTaskServer(TaskManager manager) throws IOException {
-        this(manager, DEFAULT_PORT);
-    }
-
-    public HttpTaskServer(TaskManager manager, int DEFAULT_PORT) throws IOException {
         this.manager = manager;
         this.server = initServer();
     }
@@ -72,7 +68,7 @@ public class HttpTaskServer {
     public static void main(String[] args) {
         try {
             TaskManager manager = Managers.getDefault();
-            HttpTaskServer server = new HttpTaskServer(manager, 8080);
+            HttpTaskServer server = new HttpTaskServer(manager);
             server.start();
         } catch (IOException e) {
             System.err.println("Не удалось запустить HTTP-сервер: " + e.getMessage());

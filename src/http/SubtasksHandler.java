@@ -23,7 +23,7 @@ public class SubtasksHandler extends BaseHttpHandler {
 
             switch (method) {
                 case "GET" -> handleGet(exchange, path);
-                case "POST" -> handlePost(exchange);
+                case "POST", "PUT" -> handlePost(exchange);
                 case "DELETE" -> handleDelete(exchange, path);
                 default -> sendMethodNotAllowed(exchange);
             }
@@ -37,7 +37,7 @@ public class SubtasksHandler extends BaseHttpHandler {
             int id = Integer.parseInt(path.split("/")[2]);
             Subtask subtask = manager.getSubtask(id);
             if (subtask == null) {
-                sendNotFound(exchange);
+                sendNotFound(exchange, "{\"error\":\"Not Found\"}");
             } else {
                 sendOk(exchange, gson.toJson(subtask));
             }
@@ -64,8 +64,11 @@ public class SubtasksHandler extends BaseHttpHandler {
         if (path.matches("/subtasks/\\d+")) {
             int id = Integer.parseInt(path.split("/")[2]);
             manager.deleteSubtask(id);
-        } else {
+        } else if (path.equals("/subtasks") || path.equals("/subtasks/")) {
             manager.deleteAllSubtasks();
+        } else {
+            sendNotFound(exchange, "{\"error\":\"Not Found\"}");
+            return;
         }
         sendNoContent(exchange);
     }

@@ -1,6 +1,7 @@
 package http;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import manager.TaskManager;
 import task.Task;
@@ -23,7 +24,7 @@ public class TaskHandler extends BaseHttpHandler {
 
             switch (method) {
                 case "GET" -> handleGet(exchange, path);
-                case "POST" -> handlePost(exchange);
+                case "POST", "PUT" -> handlePost(exchange);
                 case "DELETE" -> handleDelete(exchange, path);
                 default -> sendMethodNotAllowed(exchange);
             }
@@ -37,7 +38,7 @@ public class TaskHandler extends BaseHttpHandler {
             int id = Integer.parseInt(path.split("/")[2]);
             Task task = manager.getTask(id);
             if (task == null) {
-                sendNotFound(exchange);
+                sendNotFound(exchange, "{\"error\":\"Not Found\"}");
             } else {
                 sendOk(exchange, gson.toJson(task));
             }
@@ -49,15 +50,26 @@ public class TaskHandler extends BaseHttpHandler {
 
     private void handlePost(HttpExchange exchange) throws IOException {
         String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-        Task task = gson.fromJson(body, Task.class);
-
-        if (task.getId() == 0) {
-            manager.addTask(task);
-        } else {
-            manager.updateTask(task);
+        Task task;
+        try {
+            task = gson.fromJson(body, Task.class);
+        } catch (JsonSyntaxException e) {
+            sendBadRequest(exchange, "{\"error\":\"Invalid JSON\"}");
+            return;
         }
 
-        sendCreated(exchange, "{}");
+        if (task == null) {
+            sendBadRequest(exchange, "{\"error\":\"Task is null\"}");
+            return;
+        }
+
+        if (task.getId() == 0 || manager.getTask(task.getId()) == null) {
+            manager.addTask(task);
+            sendCreated(exchange, gson.toJson(task));
+        } else {
+            manager.updateTask(task);
+            sendOk(exchange, gson.toJson(task));
+        }
     }
 
     private void handleDelete(HttpExchange exchange, String path) throws IOException {

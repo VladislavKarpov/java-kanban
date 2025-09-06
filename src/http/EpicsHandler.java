@@ -42,7 +42,7 @@ public class EpicsHandler extends BaseHttpHandler {
             int id = Integer.parseInt(path.split("/")[2]);
             Epic epic = manager.getEpic(id);
             if (epic == null) {
-                sendNotFound(exchange);
+                sendNotFound(exchange, "{\"error\":\"Not Found\"}");
             } else {
                 sendOk(exchange, gson.toJson(epic));
             }

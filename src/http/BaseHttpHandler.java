@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public abstract class BaseHttpHandler implements HttpHandler {
@@ -22,8 +23,9 @@ public abstract class BaseHttpHandler implements HttpHandler {
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(statusCode, response.length);
-        exchange.getResponseBody().write(response);
-        exchange.close();
+        try (OutputStream outputStream = exchange.getResponseBody()) {
+            outputStream.write(response);
+        }
     }
 
     protected void sendOk(HttpExchange exchange, String body) throws IOException {
@@ -35,19 +37,23 @@ public abstract class BaseHttpHandler implements HttpHandler {
     }
 
     protected void sendNoContent(HttpExchange exchange) throws IOException {
-        sendText(exchange, "", 204);
+        exchange.sendResponseHeaders(204, -1);
     }
 
-    protected void sendNotFound(HttpExchange exchange) throws IOException {
-        sendText(exchange, "{\"error\":\"Not Found\"}", 404);
+    protected void sendNotFound(HttpExchange exchange, String message) throws IOException {
+        sendText(exchange, message, 404);
     }
 
     protected void sendMethodNotAllowed(HttpExchange exchange) throws IOException {
-        sendText(exchange, "{\"error\":\"Method Not Allowed\"}", 405);
+        exchange.sendResponseHeaders(405, -1);
     }
 
-    protected void sendHasInteractions(HttpExchange exchange, String msg) throws IOException {
-        sendText(exchange, "{\"error\":\"" + msg + "\"}", 406);
+    protected void sendBadRequest(HttpExchange exchange, String message) throws IOException {
+        sendText(exchange, message, 400);
+    }
+
+    protected void sendHasInteractions(HttpExchange exchange) throws IOException {
+        exchange.sendResponseHeaders(406, -1);
     }
 
     protected void sendServerError(HttpExchange exchange, Exception e) throws IOException {

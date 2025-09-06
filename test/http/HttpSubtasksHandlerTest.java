@@ -11,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpSubtasksHandlerTest extends BaseHttpHandlerTest {
 
@@ -34,6 +35,105 @@ public class HttpSubtasksHandlerTest extends BaseHttpHandlerTest {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         assertEquals(201, response.statusCode());
-        assertEquals(1, manager.getAllSubtasks().size());
+
+        // Проверяем через GET
+        HttpRequest getRequest = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks"))
+                .GET()
+                .build();
+
+        HttpResponse<String> getResponse = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        assertTrue(getResponse.body().contains("Subtask 1"));
+    }
+
+    @Test
+    void shouldReturnAllSubtasks() throws Exception {
+        Epic epic = new Epic("Epic 1", "Epic Desc");
+        manager.addEpic(epic);
+
+        manager.addSubtask(new Subtask("Subtask 1", "Desc", epic.getId()));
+        manager.addSubtask(new Subtask("Subtask 2", "Desc", epic.getId()));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("Subtask 1"));
+        assertTrue(response.body().contains("Subtask 2"));
+    }
+
+    @Test
+    void shouldReturnSubtaskById() throws Exception {
+        Epic epic = new Epic("Epic 1", "Epic Desc");
+        manager.addEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask 1", "Desc", epic.getId());
+        manager.addSubtask(subtask);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks/" + subtask.getId()))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertTrue(response.body().contains("Subtask 1"));
+    }
+
+    @Test
+    void shouldDeleteSubtaskById() throws Exception {
+        Epic epic = new Epic("Epic 1", "Epic Desc");
+        manager.addEpic(epic);
+
+        Subtask subtask = new Subtask("Subtask 1", "Desc", epic.getId());
+        manager.addSubtask(subtask);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks/" + subtask.getId()))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(204, response.statusCode());
+
+        // Проверяем через GET
+        HttpRequest getRequest = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks/" + subtask.getId()))
+                .GET()
+                .build();
+
+        HttpResponse<String> getResponse = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, getResponse.statusCode());
+    }
+
+    @Test
+    void shouldDeleteAllSubtasks() throws Exception {
+        Epic epic = new Epic("Epic 1", "Epic Desc");
+        manager.addEpic(epic);
+
+        manager.addSubtask(new Subtask("Subtask 1", "Desc", epic.getId()));
+        manager.addSubtask(new Subtask("Subtask 2", "Desc", epic.getId()));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks"))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(204, response.statusCode());
+
+        HttpRequest getRequest = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/subtasks"))
+                .GET()
+                .build();
+
+        HttpResponse<String> getResponse = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+        assertEquals("[]", getResponse.body());
     }
 }

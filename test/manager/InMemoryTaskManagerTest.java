@@ -50,12 +50,12 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         Subtask sub = new Subtask("Subtask", "Description", epic.getId());
         manager.addSubtask(sub);
 
-        assertEquals(Status.NEW, manager.getEpic(epic.getId()).getStatus());
+        assertEquals(TaskStatus.NEW, manager.getEpic(epic.getId()).getStatus());
 
-        sub.setStatus(Status.DONE);
+        sub.setStatus(TaskStatus.DONE);
         manager.updateSubtask(sub);
 
-        assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
+        assertEquals(TaskStatus.DONE, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
@@ -149,11 +149,11 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         int id = task.getId(); // получаем ID, присвоенный менеджером
 
         task.setName("Changed!");
-        task.setStatus(Status.DONE);
+        task.setStatus(TaskStatus.DONE);
 
         Task retrieved = manager.getTask(id);
 
         assertEquals("Changed!", retrieved.getName());
-        assertEquals(Status.DONE, retrieved.getStatus());
+        assertEquals(TaskStatus.DONE, retrieved.getStatus());
     }
 }

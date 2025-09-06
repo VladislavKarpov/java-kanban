@@ -38,7 +38,7 @@ public class TaskConverter {
         int id = Integer.parseInt(f[0]);
         TaskTypes type = TaskTypes.valueOf(f[1]);
         String name = unescape(f[2]);
-        Status status = Status.valueOf(f[3]);
+        TaskStatus taskStatus = TaskStatus.valueOf(f[3]);
         String description = unescape(f[4]);
         String epicField = f[5];
         String startField = f[6];
@@ -49,7 +49,7 @@ public class TaskConverter {
 
         switch (type) {
             case TASK -> {
-                Task t = new Task(name, description, status);
+                Task t = new Task(name, description, taskStatus);
                 t.setId(id);
                 t.setStartTime(start);
                 t.setDuration(duration);
@@ -58,13 +58,13 @@ public class TaskConverter {
             case EPIC -> {
                 Epic e = new Epic(name, description);
                 e.setId(id);
-                e.setStatus(status);
+                e.setStatus(taskStatus);
                 // duration, startTime и endTime у эпика считаются по подзадачам → не загружаем их
                 return e;
             }
             case SUBTASK -> {
                 int epicId = Integer.parseInt(epicField);
-                Subtask s = new Subtask(name, description, epicId, status);
+                Subtask s = new Subtask(name, description, epicId, taskStatus);
                 s.setId(id);
                 s.setStartTime(start);
                 s.setDuration(duration);

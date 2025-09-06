@@ -41,7 +41,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addSubtask(s1);
         manager.addSubtask(s2);
 
-        assertEquals(Status.NEW, manager.getEpic(epic.getId()).getStatus());
+        assertEquals(TaskStatus.NEW, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
@@ -49,12 +49,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
-        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), Status.DONE);
-        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), Status.DONE);
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.DONE);
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.DONE);
         manager.addSubtask(s1);
         manager.addSubtask(s2);
 
-        assertEquals(Status.DONE, manager.getEpic(epic.getId()).getStatus());
+        assertEquals(TaskStatus.DONE, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
@@ -62,12 +62,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
-        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), Status.NEW);
-        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), Status.DONE);
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.NEW);
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.DONE);
         manager.addSubtask(s1);
         manager.addSubtask(s2);
 
-        assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test
@@ -75,12 +75,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("Epic", "Desc");
         manager.addEpic(epic);
 
-        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), Status.IN_PROGRESS);
-        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), Status.IN_PROGRESS);
+        Subtask s1 = new Subtask("Sub1", "Desc", epic.getId(), TaskStatus.IN_PROGRESS);
+        Subtask s2 = new Subtask("Sub2", "Desc", epic.getId(), TaskStatus.IN_PROGRESS);
         manager.addSubtask(s1);
         manager.addSubtask(s2);
 
-        assertEquals(Status.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
+        assertEquals(TaskStatus.IN_PROGRESS, manager.getEpic(epic.getId()).getStatus());
     }
 
     @Test

@@ -11,11 +11,11 @@ public class TaskTest {
 
     @Test
     public void testStatusSetAndGet() {
-        Task task = new Task("Task", "Desc", Status.IN_PROGRESS);
-        assertEquals(Status.IN_PROGRESS, task.getStatus(), "Статус должен устанавливаться из конструктора");
+        Task task = new Task("Task", "Desc", TaskStatus.IN_PROGRESS);
+        assertEquals(TaskStatus.IN_PROGRESS, task.getStatus(), "Статус должен устанавливаться из конструктора");
 
-        task.setStatus(Status.DONE);
-        assertEquals(Status.DONE, task.getStatus());
+        task.setStatus(TaskStatus.DONE);
+        assertEquals(TaskStatus.DONE, task.getStatus());
     }
 
 
@@ -59,13 +59,13 @@ public class TaskTest {
 
         // Изменим свойства
         task.setName("Changed!");
-        task.setStatus(Status.DONE);
+        task.setStatus(TaskStatus.DONE);
 
         Task retrieved = manager.getTask(id);
 
         assertNotNull(retrieved, "Задача должна быть найдена по ID");
         assertEquals("Changed!", retrieved.getName());
-        assertEquals(Status.DONE, retrieved.getStatus());
+        assertEquals(TaskStatus.DONE, retrieved.getStatus());
     }
 
 }

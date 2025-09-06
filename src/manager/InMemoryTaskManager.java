@@ -8,21 +8,18 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     int nextId = 1;
-    //оставил мапы protected
+
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    //изменил название метода
     private final Comparator<Task> taskStartTimeThenIdComparator = Comparator
             .comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparingInt(Task::getId);
 
-    //изменил название метода
     private final NavigableSet<Task> sortedByPriorityTasks = new TreeSet<>(taskStartTimeThenIdComparator);
 
-    //оставил protected тут для использования в FileBackedTaskManager
     protected void addToPrioritized(Task task) {
         if (task.getType() == TaskTypes.EPIC) return;
         if (task.getStartTime() != null && task.getDuration() != null) {
@@ -49,12 +46,11 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime startTaskB = taskB.getStartTime();
         LocalDateTime endTaskB = taskB.getEndTime();
 
-        //заменил + также переписал названия переменных
+
         return ((startTaskA.isEqual(startTaskB) || startTaskA.isBefore(startTaskB)) && endTaskA.isAfter(startTaskB))
                 || ((startTaskB.isEqual(startTaskA) || startTaskB.isBefore(startTaskA)) && endTaskB.isAfter(startTaskA));
     }
 
-    //переименовал метод
     private void validateNoOverlap(Task candidate) {
         if (candidate.getStartTime() == null || candidate.getDuration() == null) return;
 
@@ -66,26 +62,25 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    //также еще тут оставил protected
     protected void updateEpicStatus(Epic epic) {
         List<Subtask> subtaskList = getSubtasksOfEpic(epic.getId());
         if (subtaskList.isEmpty()) {
-            epic.setStatus(Status.NEW);
+            epic.setStatus(TaskStatus.NEW);
             epic.updateTimeFields(subtasks);
             return;
         }
 
         boolean allNew = subtaskList.stream()
-                .allMatch(sTask -> sTask.getStatus() == Status.NEW);
+                .allMatch(sTask -> sTask.getStatus() == TaskStatus.NEW);
         boolean allDone = subtaskList.stream()
-                .allMatch(sTask -> sTask.getStatus() == Status.DONE);
+                .allMatch(sTask -> sTask.getStatus() == TaskStatus.DONE);
 
         if (allDone) {
-            epic.setStatus(Status.DONE);
+            epic.setStatus(TaskStatus.DONE);
         } else if (allNew) {
-            epic.setStatus(Status.NEW);
+            epic.setStatus(TaskStatus.NEW);
         } else {
-            epic.setStatus(Status.IN_PROGRESS);
+            epic.setStatus(TaskStatus.IN_PROGRESS);
         }
         epic.updateTimeFields(subtasks);
     }
@@ -123,6 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         subtasks.keySet().forEach(this::removeFromPrioritized);
         epics.values().forEach(Epic::clearSubtasks);
+        subtasks.clear();
         epics.values().forEach(this::updateEpicStatus);
     }
 
